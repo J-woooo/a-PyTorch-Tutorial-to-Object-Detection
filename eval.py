@@ -9,19 +9,18 @@ pp = PrettyPrinter()
 # Parameters
 data_folder = './'
 keep_difficult = True  # difficult ground truth objects must always be considered in mAP calculation, because these objects DO exist!
-batch_size = 64
+batch_size = 32
 workers = 4
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-checkpoint = './BEST_checkpoint_ssd300.pth.tar'
+checkpoint = './checkpoint_ssd300.pth.tar'
 
 # Load model checkpoint that is to be evaluated
 checkpoint = torch.load(checkpoint)
 model = checkpoint['model']
 model = model.to(device)
 
-# Switch to eval mode
+# Switch to eval modez
 model.eval()
-
 # Load test data
 test_dataset = PascalVOCDataset(data_folder,
                                 split='test',
@@ -53,6 +52,7 @@ def evaluate(test_loader, model):
         # Batches
         for i, (images, boxes, labels, difficulties) in enumerate(tqdm(test_loader, desc='Evaluating')):
             images = images.to(device)  # (N, 3, 300, 300)
+            
 
             # Forward prop.
             predicted_locs, predicted_scores = model(images)
